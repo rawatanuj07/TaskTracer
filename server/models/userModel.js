@@ -3,6 +3,28 @@
 const bcrypt = require("bcrypt");
 const db = require("../config/database");
 
+// Find user by email
+
+const findUserByEmail = (email, callback) => {
+  const query = "SELECT * FROM users WHERE email = ?";
+  console.log("Executing query:", query, "with email:", email); // Add logging here
+
+  db.get(query, [email], (err, row) => {
+    // Use db.get for a single row
+    if (err) {
+      console.log("Error executing query:", err); // Add logging here
+      return callback(err, null);
+    }
+    if (!row) {
+      console.log("No user found with email:", email); // Add logging here
+      return callback(null, null); // No user found
+    }
+    console.log("User found:", row); // Add logging here
+    return callback(null, row); // Return the user found
+  });
+};
+
+// create user
 const createUser = (username, email, password, salt, callback) => {
   console.log("serrrModel");
 
@@ -50,4 +72,4 @@ const createUser = (username, email, password, salt, callback) => {
   });
 };
 
-module.exports = { createUser };
+module.exports = { createUser, findUserByEmail };

@@ -5,6 +5,7 @@ const path = require("path");
 
 // const signupRoutes = require("./routes/api/userRoutes");
 const userRoutes = require("../server/routes/api/userRoutes");
+const loginRoutes = require("../server/routes/api/loginRoutes");
 
 // Initialize Express app
 const app = express();
@@ -18,7 +19,8 @@ console.log("middleware is okkay now");
 // API routes
 app.use("/api", userRoutes); // Use the signup routes
 console.log("signupp is okkay now");
-
+app.use("/api", loginRoutes); // Use the signup routes
+console.log("signupp is okkay now");
 // Serve static files (if you have a build directory for your React app)
 app.use(express.static(path.join(__dirname, "client/build")));
 
