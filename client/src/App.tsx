@@ -2,9 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./App.css";
-import Login from "./components/login";
-import Signup from "./components/signup"; // Assuming you have a signup component
-import Home from "./components/home";
+import Login from "./pages/login";
+import Signup from "./pages/signup"; // Assuming you have a signup component
+import Home from "./pages/home";
 
 function App() {
   return (

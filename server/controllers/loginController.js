@@ -1,49 +1,32 @@
 const bcrypt = require("bcrypt");
-const userModel = require("../models/userModel");
+const User = require("../services/signinService");
 
-// POST handler for user signin
-const signinUser = (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log("hello from Logincontroller1, req body is", email);
-
-  // Find the user by email
-  userModel.findUserByEmail(email, (err, user) => {
-    console.log("hello from Logincontroller3");
-    console.log("user is", user);
-    console.log("user password is", user.password);
-
-    if (err) {
-      console.log("hello from Logincontroller4");
-      console.log("Error finding user:", err);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-
+  console.log("hello from usercontroller1, req body is", email);
+  console.log("pass from usercontroller", password);
+  try {
+    // Find the user by email
+    const user = await User.findUserByEmail(email);
     if (!user) {
-      console.log("hello from Logincontroller5");
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(404).json({ message: "User not found" });
     }
-    console.log("hello from Logincontroller6");
 
-    // Compare the provided password with the stored hashed password
-    bcrypt.compare(password, user.password, (err, isMatch) => {
-      console.log("hello from Logincontroller7");
+    // Compare the password with the stored hash
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-      if (err) {
-        console.log("Error comparing passwords:", err);
-        return res.status(500).json({ error: "Internal server error" });
-      }
-
-      if (!isMatch) {
-        return res.status(400).json({ error: "Invalid email or password" });
-      }
-
-      // Passwords match, sign-in successful
-      res.status(200).json({ message: "Sign-in successful", userId: user.id });
+    // If successful, send back the user data (excluding password and salt)
+    res.status(200).json({
+      message: "Login successful",
+      user: { id: user.id, username: user.username, email: user.email },
     });
-  });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
-
-// Export the controller functions
 module.exports = {
-  signinUser,
+  loginUser,
 };
