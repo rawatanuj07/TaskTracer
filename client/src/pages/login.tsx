@@ -20,7 +20,7 @@ export default function Login() {
         },
         body: JSON.stringify(data),
       });
-      console.log("Data to be sent:", data);
+      console.log("Data to be sentX:", data);
 
       if (!response.ok) {
         throw new Error("Network response was not ok");

@@ -31,7 +31,7 @@ export default function Signup() {
 
     const result = await response.json();
     console.log("Response from server:", result);
-    navigate("/login"); // Redirect to home page
+    navigate("/home"); // Redirect to home page
   };
 
   return (

@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../services/signinService");
+const { Cookie } = require("express-session");
+const session = require("express-session");
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -17,11 +19,20 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-
+    // Store user information in the session
+    req.session.user = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    };
+    console.log("req.session.user izZzz", req.session);
     // If successful, send back the user data (excluding password and salt)
+    session.user = { id: user.id, username: user.username, email: user.email };
+    console.log("req.session.user izZzz", req.session);
+
     res.status(200).json({
       message: "Login successful",
-      user: { id: user.id, username: user.username, email: user.email },
+      user: req.session.user,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

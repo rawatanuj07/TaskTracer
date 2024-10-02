@@ -4,6 +4,7 @@ import axios from "axios";
 
 export default function Timer() {
   const [isTracking, setIsTracking] = useState(false);
+  const [ids, setId] = useState(null);
 
   // Initialize the stopwatch
   const { seconds, minutes, hours, isRunning, start, pause, reset } =
@@ -14,17 +15,27 @@ export default function Timer() {
     if (!isTracking) {
       // Start the stopwatch
       setIsTracking(true);
-      const startTime = new Date().toLocaleTimeString();
-      console.log(`Start time: ${startTime}`);
+      const startedTime = new Date();
+      console.log(`Starteddd time: ${startedTime}`);
 
       // Start the stopwatch
       start();
 
       // Start tracking (send data to server or store locally)
       axios
-        .post("http://localhost:3000/start-tracking", { userId: 1 })
+        .post(
+          "http://localhost:5001/api/trackingRoutes/start",
+          {
+            userId: 1,
+            startTime: startedTime,
+          },
+          { withCredentials: true }
+        )
         .then((response) => {
           console.log("Tracking started", response.data);
+          const fp = response.data.id;
+          setId(fp);
+          console.log("ID from client:", ids);
         })
         .catch((error) => {
           console.error("Error starting tracking:", error);
@@ -41,7 +52,15 @@ export default function Timer() {
 
       // Stop tracking (send data to server or store locally)
       axios
-        .post("http://localhost:3000/stop-tracking", { logId: 1, totalSeconds })
+        .post(
+          "http://localhost:5001/api/trackingRoutes/stop",
+          {
+            userId: 1,
+            totalSeconds,
+            ids,
+          },
+          { withCredentials: true }
+        )
         .then((response) => {
           console.log("Tracking stopped", response.data);
         })

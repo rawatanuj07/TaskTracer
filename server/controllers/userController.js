@@ -63,7 +63,7 @@
 // controllers/userController.js
 // controllers/userController.js
 const bcrypt = require("bcrypt");
-const User = require("../services/signinService");
+const User = require("../services/signupService");
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
